@@ -34,6 +34,7 @@ import java.util.Set;
 public class MapperRegistry {
 
     private final Configuration config;
+    // 记录Mapper接口和MapperProxyFactory之间的关系
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
 
     public MapperRegistry(Configuration config) {
@@ -73,8 +74,8 @@ public class MapperRegistry {
                 // otherwise the binding may automatically be attempted by the
                 // mapper parser. If the type is already known, it won't try.
 
-              // 注册了接口之后，根据接口，开始解析所有方法上的注解，例如 @Select
-              MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+                // 注册了接口之后，根据接口，开始解析所有方法上的注解，例如 @Select
+                MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
                 parser.parse();
                 loadCompleted = true;
             } finally {
@@ -98,10 +99,8 @@ public class MapperRegistry {
     /**
      * Adds the mappers.
      *
-     * @param packageName
-     *          the package name
-     * @param superType
-     *          the super type
+     * @param packageName the package name
+     * @param superType   the super type
      * @since 3.2.2
      */
     public void addMappers(String packageName, Class<?> superType) {
@@ -116,8 +115,7 @@ public class MapperRegistry {
     /**
      * Adds the mappers.
      *
-     * @param packageName
-     *          the package name
+     * @param packageName the package name
      * @since 3.2.2
      */
     public void addMappers(String packageName) {

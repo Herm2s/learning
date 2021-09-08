@@ -133,6 +133,7 @@ public abstract class BaseExecutor implements Executor {
     public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler)
         throws SQLException {
         BoundSql boundSql = ms.getBoundSql(parameter);
+        // 一级缓存和二级缓存的CacheKey是同一个
         CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
         return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
     }
@@ -141,7 +142,7 @@ public abstract class BaseExecutor implements Executor {
     @Override
     public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler,
         CacheKey key, BoundSql boundSql) throws SQLException {
-        // 异常体系之 ErrorContext
+        // 异常体系之ErrorContext
         ErrorContext.instance().resource(ms.getResource()).activity("executing a query").object(ms.getId());
         if (closed) {
             throw new ExecutorException("Executor was closed.");
@@ -158,6 +159,7 @@ public abstract class BaseExecutor implements Executor {
             // ResultHandler和ResultSetHandler的区别
             list = resultHandler == null ? (List<E>)localCache.getObject(key) : null;
             if (list != null) {
+                // 缓存中有数据
                 handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
             } else {
                 // 真正的查询流程
@@ -355,6 +357,7 @@ public abstract class BaseExecutor implements Executor {
     protected Connection getConnection(Log statementLog) throws SQLException {
         Connection connection = transaction.getConnection();
         if (statementLog.isDebugEnabled()) {
+            // 创建Connection的日志代理对象
             return ConnectionLogger.newInstance(connection, statementLog, queryStack);
         } else {
             return connection;

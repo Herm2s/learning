@@ -46,7 +46,9 @@ import java.util.Optional;
  */
 public class MapperMethod {
 
+    // statement id（例如：com.gupaoedu.mapper.BlogMapper.selectBlogById）和SQ 类型
     private final SqlCommand command;
+    // 方法签名，主要是返回值的类型
     private final MethodSignature method;
 
     public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
@@ -227,10 +229,13 @@ public class MapperMethod {
 
     public static class SqlCommand {
 
+        // SQL语句的名称
         private final String name;
+        // SQL语句的类型
         private final SqlCommandType type;
 
         public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
+            // 获取方法名称
             final String methodName = method.getName();
             final Class<?> declaringClass = method.getDeclaringClass();
             MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
@@ -283,18 +288,32 @@ public class MapperMethod {
 
     public static class MethodSignature {
 
+        // 判断返回是否为Collection或数组类型
         private final boolean returnsMany;
+        // 判断返回值是否为Map类型
         private final boolean returnsMap;
+        // 判断返回值是否为Void
         private final boolean returnsVoid;
+        // 判断返回值是否为Cursor
         private final boolean returnsCursor;
+        // 判断返回值是否为Optional类型
         private final boolean returnsOptional;
+        // 返回值类型
         private final Class<?> returnType;
+        // 如果返回值类型为Map,则mapKey记录了作为key的列名
         private final String mapKey;
+        // 用来标记该方法参数列表中ResultHandler类型参数的位置
         private final Integer resultHandlerIndex;
+        // 用来标记该方法参数列表中rowBounds类型参数的位置
         private final Integer rowBoundsIndex;
+        // 该方法对应的ParamNameResolver对象
         private final ParamNameResolver paramNameResolver;
 
+        /**
+         * 方法签名
+         */
         public MethodSignature(Configuration configuration, Class<?> mapperInterface, Method method) {
+            // 获取接口方法的返回类型
             Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
             if (resolvedReturnType instanceof Class<?>) {
                 this.returnType = (Class<?>)resolvedReturnType;
@@ -310,6 +329,7 @@ public class MapperMethod {
             this.returnsOptional = Optional.class.equals(this.returnType);
             this.mapKey = getMapKey(method);
             this.returnsMap = this.mapKey != null;
+            // getUniqueParamIndex查找指定类型的参数在参数列表中的位置
             this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
             this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
             this.paramNameResolver = new ParamNameResolver(configuration, method);
@@ -365,14 +385,22 @@ public class MapperMethod {
             return returnsOptional;
         }
 
+        /**
+         * 查找指定类型的参数在 参数列表中的位置
+         */
         private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
             Integer index = null;
+            // 获取方法对应的参数列表
             final Class<?>[] argTypes = method.getParameterTypes();
+            // 遍历
             for (int i = 0; i < argTypes.length; i++) {
+                // 判断是否是需要查找的类型
                 if (paramType.isAssignableFrom(argTypes[i])) {
+                    // 记录对应类型在参数列表中的位置
                     if (index == null) {
                         index = i;
                     } else {
+                        // RowBounds和ResultHandler类型的参数只能有一个，不能重复出现
                         throw new BindingException(
                             method.getName() + " cannot have multiple " + paramType.getSimpleName() + " parameters");
                     }

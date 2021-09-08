@@ -24,11 +24,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 负责创建MapperProxy代理对象
+ *
  * @author Lasse Voss
  */
 public class MapperProxyFactory<T> {
 
+    /**
+     * MapperProxyFactory可以创建mapperInterface接口的代理对象
+     * 创建的代理对象要实现的接口
+     */
     private final Class<T> mapperInterface;
+    // 缓存
     private final Map<Method, MapperMethodInvoker> methodCache = new ConcurrentHashMap<>();
 
     public MapperProxyFactory(Class<T> mapperInterface) {

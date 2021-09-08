@@ -134,6 +134,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             environmentsElement(root.evalNode("environments"));
             // 创建数据源
             databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+            // 解析typeHandler
             typeHandlerElement(root.evalNode("typeHandlers"));
             // 解析引用的Mapper映射器
             mapperElement(root.evalNode("mappers"));

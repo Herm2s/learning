@@ -231,7 +231,9 @@ public class Configuration {
 
     public void setLogImpl(Class<? extends Log> logImpl) {
         if (logImpl != null) {
+            // 记录日志的类型
             this.logImpl = logImpl;
+            // 设置适配选择
             LogFactory.useCustomLogging(this.logImpl);
         }
     }
@@ -682,14 +684,14 @@ public class Configuration {
         } else if (ExecutorType.REUSE == executorType) {
             executor = new ReuseExecutor(this, transaction);
         } else {
-            // 默认SimpleExecutor
+            // 默认SimpleExecutor，每一次SQL操作都创建一个新的Statement对象
             executor = new SimpleExecutor(this, transaction);
         }
         // 二级缓存开关，settings中的cacheEnabled默认是true
         if (cacheEnabled) {
             executor = new CachingExecutor(executor);
         }
-        // 植入插件的逻辑，至此，四大对象已经全部拦截完毕
+        // 植入插件的逻辑，至此，四大对象已经全部拦截完毕；这里面是一个拦截器链
         executor = (Executor)interceptorChain.pluginAll(executor);
         return executor;
     }

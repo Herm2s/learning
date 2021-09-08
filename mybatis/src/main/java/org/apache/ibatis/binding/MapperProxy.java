@@ -30,6 +30,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
+ * Mapper代理对象
+ *
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
@@ -40,8 +42,15 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
         | Lookup.PACKAGE | Lookup.PUBLIC;
     private static final Constructor<Lookup> lookupConstructor;
     private static final Method privateLookupInMethod;
+    // 记录关联的SqlSession对象
     private final SqlSession sqlSession;
+    // Mapper接口对应的Class对象
     private final Class<T> mapperInterface;
+    /**
+     * 用于缓存MapperMethod对象，key是Mapper接口方法对应的Method对象，value是对应的MapperMethod对象
+     * MapperMethod对象会完成参数转换以及SQL语句的执行
+     * 注意：MapperMethod中并不会记录任何状态信息，可以在多线程间共享
+     */
     private final Map<Method, MapperMethodInvoker> methodCache;
 
     public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
@@ -102,7 +111,11 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             if (invoker != null) {
                 return invoker;
             }
-
+            /*
+              跟据Key获取值，如果为空则计算后面的函数并把结果设置进key然后返回计算值
+              获取的是MapperMethodInvoker接口对象，只有一个invoke方法
+              根据method去methodCache中获取，如果返回空则用第二个参数填充
+             */
             return methodCache.computeIfAbsent(method, m -> {
                 if (m.isDefault()) {
                     try {
@@ -116,6 +129,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
                         throw new RuntimeException(e);
                     }
                 } else {
+                    // 创建一个MapperMethod
                     return new PlainMethodInvoker(
                         new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
                 }

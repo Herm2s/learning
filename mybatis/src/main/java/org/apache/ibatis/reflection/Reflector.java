@@ -69,18 +69,29 @@ public class Reflector {
     // 记录了所有属性名称的集合
     private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
 
+    // 解析指定的Class类型 并填充上述的集合信息
     public Reflector(Class<?> clazz) {
+        // 初始化type字段
         type = clazz;
+        // 设置默认的构造方法
         addDefaultConstructor(clazz);
+        // 获取getter方法
         addGetMethods(clazz);
+        // 获取setter方法
         addSetMethods(clazz);
+        // 处理没有getter/setter方法的字段
         addFields(clazz);
+        // 初始化可读属性名称集合
         readablePropertyNames = getMethods.keySet().toArray(new String[0]);
+        // 初始化可写属性名称集合
         writablePropertyNames = setMethods.keySet().toArray(new String[0]);
+        // caseInsensitivePropertyMap记录了所有的可读和可写属性的名称 也就是记录了所有的属性名称
         for (String propName : readablePropertyNames) {
+            // 属性名称转大写
             caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
         }
         for (String propName : writablePropertyNames) {
+            // 属性名称转大写
             caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
         }
     }

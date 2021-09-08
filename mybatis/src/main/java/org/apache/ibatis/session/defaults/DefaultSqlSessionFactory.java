@@ -95,7 +95,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       // 创建事务
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
-      // 根据事务事务工厂和默认的执行器类型，创建执行器
+      // 根据事务事务工厂和默认的执行器类型，创建执行器，Executor执行SQL语句操作
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {

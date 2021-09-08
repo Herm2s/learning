@@ -223,6 +223,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
 
     private void cacheElement(XNode context) {
+        // 只有cache标签不为空时才解析
         if (context != null) {
             String type = context.getStringAttribute("type", "PERPETUAL");
             Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);
@@ -460,7 +461,7 @@ public class XMLMapperBuilder extends BaseBuilder {
             } catch (ClassNotFoundException e) {
                 // ignore, bound type is not required
             }
-            // 判断 在MapperRegistry中是否注册的有当前类型的MapperProxyFactory对象
+            // 判断在MapperRegistry中是否注册的有当前类型的MapperProxyFactory对象
             if (boundType != null && !configuration.hasMapper(boundType)) {
                 // Spring may not know the real resource name so we set a flag
                 // to prevent loading again this resource from the mapper interface
