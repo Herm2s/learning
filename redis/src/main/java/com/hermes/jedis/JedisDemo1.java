@@ -14,25 +14,13 @@ import java.util.Set;
  */
 public class JedisDemo1 {
 
-    public static void main(String[] args) {
-
-        // 创建Jedis对象
-        Jedis jedis = new Jedis(new HostAndPort("127.0.0.1", 6379),
-                DefaultJedisClientConfig.builder()
-                        .password("123456")
-                        .build());
-        // 测试
-        String value = jedis.ping();
-        System.out.println(value);
-    }
-
     @Test
     public void demo1() {
         // 创建Jedis对象
         Jedis jedis = new Jedis(new HostAndPort("127.0.0.1", 6379),
-                DefaultJedisClientConfig.builder()
-                        .password("123456")
-                        .build());
+            DefaultJedisClientConfig.builder()
+                .password("123456")
+                .build());
         jedis.set("test", "java");
         Set<String> keys = jedis.keys("*");
         System.out.println(keys);
