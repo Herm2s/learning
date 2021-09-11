@@ -78,9 +78,9 @@ import org.springframework.util.xml.DomUtils;
  * @author Rod Johnson
  * @author Mark Fisher
  * @author Gary Russell
- * @since 2.0
  * @see ParserContext
  * @see DefaultBeanDefinitionDocumentReader
+ * @since 2.0
  */
 public class BeanDefinitionParserDelegate {
 
@@ -224,7 +224,6 @@ public class BeanDefinitionParserDelegate {
 
 	public static final String DEFAULT_DESTROY_METHOD_ATTRIBUTE = "default-destroy-method";
 
-
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	private final XmlReaderContext readerContext;
@@ -240,7 +239,6 @@ public class BeanDefinitionParserDelegate {
 	 */
 	private final Set<String> usedNames = new HashSet<>();
 
-
 	/**
 	 * Create a new BeanDefinitionParserDelegate associated with the supplied
 	 * {@link XmlReaderContext}.
@@ -249,7 +247,6 @@ public class BeanDefinitionParserDelegate {
 		Assert.notNull(readerContext, "XmlReaderContext must not be null");
 		this.readerContext = readerContext;
 	}
-
 
 	/**
 	 * Get the {@link XmlReaderContext} associated with this helper instance.
@@ -288,7 +285,6 @@ public class BeanDefinitionParserDelegate {
 		this.readerContext.error(message, source, this.parseState.snapshot(), cause);
 	}
 
-
 	/**
 	 * Initialize the default settings assuming a {@code null} parent delegate.
 	 */
@@ -301,6 +297,7 @@ public class BeanDefinitionParserDelegate {
 	 * init-method, destroy-method and merge settings. Support nested 'beans'
 	 * element use cases by falling back to the given parent in case the
 	 * defaults are not explicitly set locally.
+	 *
 	 * @see #populateDefaults(DocumentDefaultsDefinition, DocumentDefaultsDefinition, org.w3c.dom.Element)
 	 * @see #getDefaults()
 	 */
@@ -314,11 +311,13 @@ public class BeanDefinitionParserDelegate {
 	 * autowire, dependency check settings, init-method, destroy-method and merge settings.
 	 * Support nested 'beans' element use cases by falling back to {@code parentDefaults}
 	 * in case the defaults are not explicitly set locally.
-	 * @param defaults the defaults to populate
+	 *
+	 * @param defaults       the defaults to populate
 	 * @param parentDefaults the parent BeanDefinitionParserDelegate (if any) defaults to fall back to
-	 * @param root the root element of the current bean definition document (or nested beans element)
+	 * @param root           the root element of the current bean definition document (or nested beans element)
 	 */
-	protected void populateDefaults(DocumentDefaultsDefinition defaults, @Nullable DocumentDefaultsDefinition parentDefaults, Element root) {
+	protected void populateDefaults(DocumentDefaultsDefinition defaults,
+			@Nullable DocumentDefaultsDefinition parentDefaults, Element root) {
 		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE);
 		if (isDefaultValue(lazyInit)) {
 			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
@@ -342,22 +341,19 @@ public class BeanDefinitionParserDelegate {
 
 		if (root.hasAttribute(DEFAULT_AUTOWIRE_CANDIDATES_ATTRIBUTE)) {
 			defaults.setAutowireCandidates(root.getAttribute(DEFAULT_AUTOWIRE_CANDIDATES_ATTRIBUTE));
-		}
-		else if (parentDefaults != null) {
+		} else if (parentDefaults != null) {
 			defaults.setAutowireCandidates(parentDefaults.getAutowireCandidates());
 		}
 
 		if (root.hasAttribute(DEFAULT_INIT_METHOD_ATTRIBUTE)) {
 			defaults.setInitMethod(root.getAttribute(DEFAULT_INIT_METHOD_ATTRIBUTE));
-		}
-		else if (parentDefaults != null) {
+		} else if (parentDefaults != null) {
 			defaults.setInitMethod(parentDefaults.getInitMethod());
 		}
 
 		if (root.hasAttribute(DEFAULT_DESTROY_METHOD_ATTRIBUTE)) {
 			defaults.setDestroyMethod(root.getAttribute(DEFAULT_DESTROY_METHOD_ATTRIBUTE));
-		}
-		else if (parentDefaults != null) {
+		} else if (parentDefaults != null) {
 			defaults.setDestroyMethod(parentDefaults.getDestroyMethod());
 		}
 
@@ -394,7 +390,6 @@ public class BeanDefinitionParserDelegate {
 		return (candidatePattern != null ? StringUtils.commaDelimitedListToStringArray(candidatePattern) : null);
 	}
 
-
 	/**
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
@@ -412,16 +407,21 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
+		// 解析id属性
 		String id = ele.getAttribute(ID_ATTRIBUTE);
+		// 解析name属性
 		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
 
 		List<String> aliases = new ArrayList<>();
+		// 将bean元素的name放入别名数组中，spring支持两种方式定义别名，一种是通过<alias>，一种是<bean name = ""/>
 		if (StringUtils.hasLength(nameAttr)) {
+			// 分割nameAttr
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
 		String beanName = id;
+		// 如果beanName为空且别名不为空，将第一个别名作为beanName
 		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
 			beanName = aliases.remove(0);
 			if (logger.isTraceEnabled()) {
@@ -430,27 +430,45 @@ public class BeanDefinitionParserDelegate {
 			}
 		}
 
+		/* 内部Bean为空时
+		 * 什么情况下不为空呢？也就是有内部类时
+		 *
+		 * <bean class="com.hermes.entity.User" name="user2,use" id="user">
+		 * 		<property name="vip">
+		 * 			<bean id="inner" class="com.hermes.entity.User$Vip">
+		 * 				<constructor-arg ref="user"/>
+		 * 				<property name="vipLevel" value="9"/>
+		 * 			</bean>
+		 * 		</property>
+		 * 	</bean>
+		 */
 		if (containingBean == null) {
+			// 验证指定的bean名称（也就是ID属性）和别名是否已存在
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		// 对bean标签的其他属性进行解析，并封装在GenericBeanDefinition类型的实例中
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
+			// 如果不存在beanName
 			if (!StringUtils.hasText(beanName)) {
 				try {
 					if (containingBean != null) {
+						// 则根据BeanDefinitionReaderUtils提供的命名规则生成beanName
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
-					}
-					else {
+					} else {
+						// 跟据XmlReaderContext生成对应的beanName
+						// 类似于com.hermes.entity.User#0
 						beanName = this.readerContext.generateBeanName(beanDefinition);
 						// Register an alias for the plain bean class name, if still possible,
 						// if the generator returned the class name plus a suffix.
 						// This is expected for Spring 1.2/2.0 backwards compatibility.
+						// 类似于com.hermes.entity.User
 						String beanClassName = beanDefinition.getBeanClassName();
 						if (beanClassName != null &&
 								beanName.startsWith(beanClassName) && beanName.length() > beanClassName.length() &&
 								!this.readerContext.getRegistry().isBeanNameInUse(beanClassName)) {
+							// 放入别名集合中
 							aliases.add(beanClassName);
 						}
 					}
@@ -458,13 +476,13 @@ public class BeanDefinitionParserDelegate {
 						logger.trace("Neither XML 'id' nor 'name' specified - " +
 								"using generated bean name [" + beanName + "]");
 					}
-				}
-				catch (Exception ex) {
+				} catch (Exception ex) {
 					error(ex.getMessage(), ele);
 					return null;
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			// 将获取到的信息封装到BeanDefinitionHolder实例中
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
@@ -502,44 +520,49 @@ public class BeanDefinitionParserDelegate {
 
 		this.parseState.push(new BeanEntry(beanName));
 
+		// class
 		String className = null;
 		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
+		// parent
 		String parent = null;
 		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
 		try {
+			// 将class与parentName作为参数，创建一个GenericBeanDefinition实例
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
 
+			// 解析默认bean标签的各种属性，通过set方法为属性赋值（例如depends-on、scope、primary等）
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
+			// 提取description
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
-
+			// 解析meta元数据
 			parseMetaElements(ele, bd);
+			// 解析lookup-method属性
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
+			// 解析replaced-method属性
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-
+			// 解析构造函数参数
 			parseConstructorArgElements(ele, bd);
+			// 解析property子元素
 			parsePropertyElements(ele, bd);
+			// 解析qualifier子元素
 			parseQualifierElements(ele, bd);
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
 
 			return bd;
-		}
-		catch (ClassNotFoundException ex) {
+		} catch (ClassNotFoundException ex) {
 			error("Bean class [" + className + "] not found", ele, ex);
-		}
-		catch (NoClassDefFoundError err) {
+		} catch (NoClassDefFoundError err) {
 			error("Class that bean class [" + className + "] depends on not found", ele, err);
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			error("Unexpected failure during bean definition parsing", ele, ex);
-		}
-		finally {
+		} finally {
 			this.parseState.pop();
 		}
 
@@ -548,43 +571,54 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Apply the attributes of the given bean element to the given bean * definition.
-	 * @param ele bean declaration element
-	 * @param beanName bean name
+	 *
+	 * @param ele            bean declaration element
+	 * @param beanName       bean name
 	 * @param containingBean containing bean definition
 	 * @return a bean definition initialized according to the bean element attributes
 	 */
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
+		// 解析singleton属性
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
+			// 声明singleton属性已升级到scope
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
+		// 解析scope属性
 		else if (ele.hasAttribute(SCOPE_ATTRIBUTE)) {
 			bd.setScope(ele.getAttribute(SCOPE_ATTRIBUTE));
 		}
+		// 若当前bean没有明确使用scope属性时，且当前bean被解析为内部bean，默认使用外部bean的作用域
 		else if (containingBean != null) {
 			// Take default from containing bean in case of an inner bean definition.
 			bd.setScope(containingBean.getScope());
 		}
 
+		// 解析abstract标签
 		if (ele.hasAttribute(ABSTRACT_ATTRIBUTE)) {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
+		// 解析lazy-init属性
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
+		// 若没有设置或设置为其他字符都会被设置成false
 		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
+		// 解析autowire属性
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
+		// 解析depends-on属性
 		if (ele.hasAttribute(DEPENDS_ON_ATTRIBUTE)) {
 			String dependsOn = ele.getAttribute(DEPENDS_ON_ATTRIBUTE);
 			bd.setDependsOn(StringUtils.tokenizeToStringArray(dependsOn, MULTI_VALUE_ATTRIBUTE_DELIMITERS));
 		}
 
+		// 解析autowire-candidate属性
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
 		if (isDefaultValue(autowireCandidate)) {
 			String candidatePattern = this.defaults.getAutowireCandidates();
@@ -592,36 +626,39 @@ public class BeanDefinitionParserDelegate {
 				String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);
 				bd.setAutowireCandidate(PatternMatchUtils.simpleMatch(patterns, beanName));
 			}
-		}
-		else {
+		} else {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
+		// 解析primary属性
 		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
+		// 解析init-method属性
 		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			bd.setInitMethodName(initMethodName);
-		}
-		else if (this.defaults.getInitMethod() != null) {
+		} else if (this.defaults.getInitMethod() != null) {
 			bd.setInitMethodName(this.defaults.getInitMethod());
 			bd.setEnforceInitMethod(false);
 		}
 
+		// 解析destroy-method属性
 		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
 			String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
 			bd.setDestroyMethodName(destroyMethodName);
-		}
-		else if (this.defaults.getDestroyMethod() != null) {
+		} else if (this.defaults.getDestroyMethod() != null) {
 			bd.setDestroyMethodName(this.defaults.getDestroyMethod());
 			bd.setEnforceDestroyMethod(false);
 		}
 
+		// 解析factory-method属性
 		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) {
 			bd.setFactoryMethodName(ele.getAttribute(FACTORY_METHOD_ATTRIBUTE));
 		}
+
+		// 解析factory-bean属性
 		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) {
 			bd.setFactoryBeanName(ele.getAttribute(FACTORY_BEAN_ATTRIBUTE));
 		}
@@ -631,7 +668,8 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Create a bean definition for the given class name and parent name.
-	 * @param className the name of the bean class
+	 *
+	 * @param className  the name of the bean class
 	 * @param parentName the name of the bean's parent bean
 	 * @return the newly created bean definition
 	 * @throws ClassNotFoundException if bean class resolution was attempted but failed
@@ -651,7 +689,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
-				Element metaElement = (Element) node;
+				Element metaElement = (Element)node;
 				String key = metaElement.getAttribute(KEY_ATTRIBUTE);
 				String value = metaElement.getAttribute(VALUE_ATTRIBUTE);
 				BeanMetadataAttribute attribute = new BeanMetadataAttribute(key, value);
@@ -674,14 +712,11 @@ public class BeanDefinitionParserDelegate {
 		int autowire = AbstractBeanDefinition.AUTOWIRE_NO;
 		if (AUTOWIRE_BY_NAME_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_BY_NAME;
-		}
-		else if (AUTOWIRE_BY_TYPE_VALUE.equals(attr)) {
+		} else if (AUTOWIRE_BY_TYPE_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_BY_TYPE;
-		}
-		else if (AUTOWIRE_CONSTRUCTOR_VALUE.equals(attr)) {
+		} else if (AUTOWIRE_CONSTRUCTOR_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR;
-		}
-		else if (AUTOWIRE_AUTODETECT_VALUE.equals(attr)) {
+		} else if (AUTOWIRE_AUTODETECT_VALUE.equals(attr)) {
 			autowire = AbstractBeanDefinition.AUTOWIRE_AUTODETECT;
 		}
 		// Else leave default value.
@@ -696,7 +731,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, CONSTRUCTOR_ARG_ELEMENT)) {
-				parseConstructorArgElement((Element) node, bd);
+				parseConstructorArgElement((Element)node, bd);
 			}
 		}
 	}
@@ -709,7 +744,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, PROPERTY_ELEMENT)) {
-				parsePropertyElement((Element) node, bd);
+				parsePropertyElement((Element)node, bd);
 			}
 		}
 	}
@@ -722,7 +757,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, QUALIFIER_ELEMENT)) {
-				parseQualifierElement((Element) node, bd);
+				parseQualifierElement((Element)node, bd);
 			}
 		}
 	}
@@ -735,7 +770,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, LOOKUP_METHOD_ELEMENT)) {
-				Element ele = (Element) node;
+				Element ele = (Element)node;
 				String methodName = ele.getAttribute(NAME_ATTRIBUTE);
 				String beanRef = ele.getAttribute(BEAN_ELEMENT);
 				LookupOverride override = new LookupOverride(methodName, beanRef);
@@ -753,7 +788,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (isCandidateElement(node) && nodeNameEquals(node, REPLACED_METHOD_ELEMENT)) {
-				Element replacedMethodEle = (Element) node;
+				Element replacedMethodEle = (Element)node;
 				String name = replacedMethodEle.getAttribute(NAME_ATTRIBUTE);
 				String callback = replacedMethodEle.getAttribute(REPLACER_ATTRIBUTE);
 				ReplaceOverride replaceOverride = new ReplaceOverride(name, callback);
@@ -784,12 +819,12 @@ public class BeanDefinitionParserDelegate {
 				int index = Integer.parseInt(indexAttr);
 				if (index < 0) {
 					error("'index' cannot be lower than 0", ele);
-				}
-				else {
+				} else {
 					try {
 						this.parseState.push(new ConstructorArgumentEntry(index));
 						Object value = parsePropertyValue(ele, bd, null);
-						ConstructorArgumentValues.ValueHolder valueHolder = new ConstructorArgumentValues.ValueHolder(value);
+						ConstructorArgumentValues.ValueHolder valueHolder =
+								new ConstructorArgumentValues.ValueHolder(value);
 						if (StringUtils.hasLength(typeAttr)) {
 							valueHolder.setType(typeAttr);
 						}
@@ -799,21 +834,17 @@ public class BeanDefinitionParserDelegate {
 						valueHolder.setSource(extractSource(ele));
 						if (bd.getConstructorArgumentValues().hasIndexedArgumentValue(index)) {
 							error("Ambiguous constructor-arg entries for index " + index, ele);
-						}
-						else {
+						} else {
 							bd.getConstructorArgumentValues().addIndexedArgumentValue(index, valueHolder);
 						}
-					}
-					finally {
+					} finally {
 						this.parseState.pop();
 					}
 				}
-			}
-			catch (NumberFormatException ex) {
+			} catch (NumberFormatException ex) {
 				error("Attribute 'index' of tag 'constructor-arg' must be an integer", ele);
 			}
-		}
-		else {
+		} else {
 			try {
 				this.parseState.push(new ConstructorArgumentEntry());
 				Object value = parsePropertyValue(ele, bd, null);
@@ -826,8 +857,7 @@ public class BeanDefinitionParserDelegate {
 				}
 				valueHolder.setSource(extractSource(ele));
 				bd.getConstructorArgumentValues().addGenericArgumentValue(valueHolder);
-			}
-			finally {
+			} finally {
 				this.parseState.pop();
 			}
 		}
@@ -853,8 +883,7 @@ public class BeanDefinitionParserDelegate {
 			parseMetaElements(ele, pv);
 			pv.setSource(extractSource(ele));
 			bd.getPropertyValues().addPropertyValue(pv);
-		}
-		finally {
+		} finally {
 			this.parseState.pop();
 		}
 	}
@@ -880,23 +909,21 @@ public class BeanDefinitionParserDelegate {
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
 				if (isCandidateElement(node) && nodeNameEquals(node, QUALIFIER_ATTRIBUTE_ELEMENT)) {
-					Element attributeEle = (Element) node;
+					Element attributeEle = (Element)node;
 					String attributeName = attributeEle.getAttribute(KEY_ATTRIBUTE);
 					String attributeValue = attributeEle.getAttribute(VALUE_ATTRIBUTE);
 					if (StringUtils.hasLength(attributeName) && StringUtils.hasLength(attributeValue)) {
 						BeanMetadataAttribute attribute = new BeanMetadataAttribute(attributeName, attributeValue);
 						attribute.setSource(extractSource(attributeEle));
 						qualifier.addMetadataAttribute(attribute);
-					}
-					else {
+					} else {
 						error("Qualifier 'attribute' tag must have a 'name' and 'value'", attributeEle);
 						return;
 					}
 				}
 			}
 			bd.addQualifier(qualifier);
-		}
-		finally {
+		} finally {
 			this.parseState.pop();
 		}
 	}
@@ -921,9 +948,8 @@ public class BeanDefinitionParserDelegate {
 				// Child element is what we're looking for.
 				if (subElement != null) {
 					error(elementName + " must not contain more than one sub-element", ele);
-				}
-				else {
-					subElement = (Element) node;
+				} else {
+					subElement = (Element)node;
 				}
 			}
 		}
@@ -944,16 +970,13 @@ public class BeanDefinitionParserDelegate {
 			RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 			ref.setSource(extractSource(ele));
 			return ref;
-		}
-		else if (hasValueAttribute) {
+		} else if (hasValueAttribute) {
 			TypedStringValue valueHolder = new TypedStringValue(ele.getAttribute(VALUE_ATTRIBUTE));
 			valueHolder.setSource(extractSource(ele));
 			return valueHolder;
-		}
-		else if (subElement != null) {
+		} else if (subElement != null) {
 			return parsePropertySubElement(subElement, bd);
-		}
-		else {
+		} else {
 			// Neither child element nor "ref" or "value" attribute found.
 			error(elementName + " must specify a ref or value", ele);
 			return null;
@@ -963,8 +986,9 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Parse a value, ref or collection sub-element of a property or
 	 * constructor-arg element.
+	 *
 	 * @param ele subelement of property element; we don't know which yet
-	 * @param bd the current bean definition (if any)
+	 * @param bd  the current bean definition (if any)
 	 */
 	@Nullable
 	public Object parsePropertySubElement(Element ele, @Nullable BeanDefinition bd) {
@@ -974,24 +998,23 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Parse a value, ref or collection sub-element of a property or
 	 * constructor-arg element.
-	 * @param ele subelement of property element; we don't know which yet
-	 * @param bd the current bean definition (if any)
+	 *
+	 * @param ele              subelement of property element; we don't know which yet
+	 * @param bd               the current bean definition (if any)
 	 * @param defaultValueType the default type (class name) for any
-	 * {@code <value>} tag that might be created
+	 *                         {@code <value>} tag that might be created
 	 */
 	@Nullable
 	public Object parsePropertySubElement(Element ele, @Nullable BeanDefinition bd, @Nullable String defaultValueType) {
 		if (!isDefaultNamespace(ele)) {
 			return parseNestedCustomElement(ele, bd);
-		}
-		else if (nodeNameEquals(ele, BEAN_ELEMENT)) {
+		} else if (nodeNameEquals(ele, BEAN_ELEMENT)) {
 			BeanDefinitionHolder nestedBd = parseBeanDefinitionElement(ele, bd);
 			if (nestedBd != null) {
 				nestedBd = decorateBeanDefinitionIfRequired(ele, nestedBd, bd);
 			}
 			return nestedBd;
-		}
-		else if (nodeNameEquals(ele, REF_ELEMENT)) {
+		} else if (nodeNameEquals(ele, REF_ELEMENT)) {
 			// A generic reference to any name of any bean.
 			String refName = ele.getAttribute(BEAN_REF_ATTRIBUTE);
 			boolean toParent = false;
@@ -1011,36 +1034,27 @@ public class BeanDefinitionParserDelegate {
 			RuntimeBeanReference ref = new RuntimeBeanReference(refName, toParent);
 			ref.setSource(extractSource(ele));
 			return ref;
-		}
-		else if (nodeNameEquals(ele, IDREF_ELEMENT)) {
+		} else if (nodeNameEquals(ele, IDREF_ELEMENT)) {
 			return parseIdRefElement(ele);
-		}
-		else if (nodeNameEquals(ele, VALUE_ELEMENT)) {
+		} else if (nodeNameEquals(ele, VALUE_ELEMENT)) {
 			return parseValueElement(ele, defaultValueType);
-		}
-		else if (nodeNameEquals(ele, NULL_ELEMENT)) {
+		} else if (nodeNameEquals(ele, NULL_ELEMENT)) {
 			// It's a distinguished null value. Let's wrap it in a TypedStringValue
 			// object in order to preserve the source location.
 			TypedStringValue nullHolder = new TypedStringValue(null);
 			nullHolder.setSource(extractSource(ele));
 			return nullHolder;
-		}
-		else if (nodeNameEquals(ele, ARRAY_ELEMENT)) {
+		} else if (nodeNameEquals(ele, ARRAY_ELEMENT)) {
 			return parseArrayElement(ele, bd);
-		}
-		else if (nodeNameEquals(ele, LIST_ELEMENT)) {
+		} else if (nodeNameEquals(ele, LIST_ELEMENT)) {
 			return parseListElement(ele, bd);
-		}
-		else if (nodeNameEquals(ele, SET_ELEMENT)) {
+		} else if (nodeNameEquals(ele, SET_ELEMENT)) {
 			return parseSetElement(ele, bd);
-		}
-		else if (nodeNameEquals(ele, MAP_ELEMENT)) {
+		} else if (nodeNameEquals(ele, MAP_ELEMENT)) {
 			return parseMapElement(ele, bd);
-		}
-		else if (nodeNameEquals(ele, PROPS_ELEMENT)) {
+		} else if (nodeNameEquals(ele, PROPS_ELEMENT)) {
 			return parsePropsElement(ele);
-		}
-		else {
+		} else {
 			error("Unknown property sub-element: [" + ele.getNodeName() + "]", ele);
 			return null;
 		}
@@ -1082,8 +1096,7 @@ public class BeanDefinitionParserDelegate {
 			typedValue.setSource(extractSource(ele));
 			typedValue.setSpecifiedTypeName(specifiedTypeName);
 			return typedValue;
-		}
-		catch (ClassNotFoundException ex) {
+		} catch (ClassNotFoundException ex) {
 			error("Type class [" + typeName + "] not found for <value> element", ele, ex);
 			return value;
 		}
@@ -1091,6 +1104,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Build a typed String value Object for the given raw value.
+	 *
 	 * @see org.springframework.beans.factory.config.TypedStringValue
 	 */
 	protected TypedStringValue buildTypedStringValue(String value, @Nullable String targetTypeName)
@@ -1100,12 +1114,10 @@ public class BeanDefinitionParserDelegate {
 		TypedStringValue typedValue;
 		if (!StringUtils.hasText(targetTypeName)) {
 			typedValue = new TypedStringValue(value);
-		}
-		else if (classLoader != null) {
+		} else if (classLoader != null) {
 			Class<?> targetType = ClassUtils.forName(targetTypeName, classLoader);
 			typedValue = new TypedStringValue(value, targetType);
-		}
-		else {
+		} else {
 			typedValue = new TypedStringValue(value, targetTypeName);
 		}
 		return typedValue;
@@ -1159,7 +1171,7 @@ public class BeanDefinitionParserDelegate {
 		for (int i = 0; i < elementNodes.getLength(); i++) {
 			Node node = elementNodes.item(i);
 			if (node instanceof Element && !nodeNameEquals(node, DESCRIPTION_ELEMENT)) {
-				target.add(parsePropertySubElement((Element) node, bd, defaultElementType));
+				target.add(parsePropertySubElement((Element)node, bd, defaultElementType));
 			}
 		}
 	}
@@ -1187,24 +1199,20 @@ public class BeanDefinitionParserDelegate {
 			for (int j = 0; j < entrySubNodes.getLength(); j++) {
 				Node node = entrySubNodes.item(j);
 				if (node instanceof Element) {
-					Element candidateEle = (Element) node;
+					Element candidateEle = (Element)node;
 					if (nodeNameEquals(candidateEle, KEY_ELEMENT)) {
 						if (keyEle != null) {
 							error("<entry> element is only allowed to contain one <key> sub-element", entryEle);
-						}
-						else {
+						} else {
 							keyEle = candidateEle;
 						}
-					}
-					else {
+					} else {
 						// Child element is what we're looking for.
 						if (nodeNameEquals(candidateEle, DESCRIPTION_ELEMENT)) {
 							// the element is a <description> -> ignore it
-						}
-						else if (valueEle != null) {
+						} else if (valueEle != null) {
 							error("<entry> element must not contain more than one value sub-element", entryEle);
-						}
-						else {
+						} else {
 							valueEle = candidateEle;
 						}
 					}
@@ -1222,8 +1230,7 @@ public class BeanDefinitionParserDelegate {
 			}
 			if (hasKeyAttribute) {
 				key = buildTypedStringValueForMap(entryEle.getAttribute(KEY_ATTRIBUTE), defaultKeyType, entryEle);
-			}
-			else if (hasKeyRefAttribute) {
+			} else if (hasKeyRefAttribute) {
 				String refName = entryEle.getAttribute(KEY_REF_ATTRIBUTE);
 				if (!StringUtils.hasText(refName)) {
 					error("<entry> element contains empty 'key-ref' attribute", entryEle);
@@ -1231,11 +1238,9 @@ public class BeanDefinitionParserDelegate {
 				RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 				ref.setSource(extractSource(entryEle));
 				key = ref;
-			}
-			else if (keyEle != null) {
+			} else if (keyEle != null) {
 				key = parseKeyElement(keyEle, bd, defaultKeyType);
-			}
-			else {
+			} else {
 				error("<entry> element must specify a key", entryEle);
 			}
 
@@ -1250,7 +1255,7 @@ public class BeanDefinitionParserDelegate {
 						"'value' attribute OR 'value-ref' attribute OR <value> sub-element", entryEle);
 			}
 			if ((hasValueTypeAttribute && hasValueRefAttribute) ||
-				(hasValueTypeAttribute && !hasValueAttribute) ||
+					(hasValueTypeAttribute && !hasValueAttribute) ||
 					(hasValueTypeAttribute && valueEle != null)) {
 				error("<entry> element is only allowed to contain a 'value-type' " +
 						"attribute when it has a 'value' attribute", entryEle);
@@ -1261,8 +1266,7 @@ public class BeanDefinitionParserDelegate {
 					valueType = defaultValueType;
 				}
 				value = buildTypedStringValueForMap(entryEle.getAttribute(VALUE_ATTRIBUTE), valueType, entryEle);
-			}
-			else if (hasValueRefAttribute) {
+			} else if (hasValueRefAttribute) {
 				String refName = entryEle.getAttribute(VALUE_REF_ATTRIBUTE);
 				if (!StringUtils.hasText(refName)) {
 					error("<entry> element contains empty 'value-ref' attribute", entryEle);
@@ -1270,11 +1274,9 @@ public class BeanDefinitionParserDelegate {
 				RuntimeBeanReference ref = new RuntimeBeanReference(refName);
 				ref.setSource(extractSource(entryEle));
 				value = ref;
-			}
-			else if (valueEle != null) {
+			} else if (valueEle != null) {
 				value = parsePropertySubElement(valueEle, bd, defaultValueType);
-			}
-			else {
+			} else {
 				error("<entry> element must specify a value", entryEle);
 			}
 
@@ -1287,6 +1289,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Build a typed String value Object for the given raw value.
+	 *
 	 * @see org.springframework.beans.factory.config.TypedStringValue
 	 */
 	protected final Object buildTypedStringValueForMap(String value, String defaultTypeName, Element entryEle) {
@@ -1294,8 +1297,7 @@ public class BeanDefinitionParserDelegate {
 			TypedStringValue typedValue = buildTypedStringValue(value, defaultTypeName);
 			typedValue.setSource(extractSource(entryEle));
 			return typedValue;
-		}
-		catch (ClassNotFoundException ex) {
+		} catch (ClassNotFoundException ex) {
 			error("Type class [" + defaultTypeName + "] not found for Map key/value type", entryEle, ex);
 			return value;
 		}
@@ -1314,9 +1316,8 @@ public class BeanDefinitionParserDelegate {
 				// Child element is what we're looking for.
 				if (subElement != null) {
 					error("<key> element must not contain more than one value sub-element", keyEle);
-				}
-				else {
-					subElement = (Element) node;
+				} else {
+					subElement = (Element)node;
 				}
 			}
 		}
@@ -1363,6 +1364,7 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse a custom element (outside of the default namespace).
+	 *
 	 * @param ele the element to parse
 	 * @return the resulting bean definition
 	 */
@@ -1373,7 +1375,8 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Parse a custom element (outside of the default namespace).
-	 * @param ele the element to parse
+	 *
+	 * @param ele          the element to parse
 	 * @param containingBd the containing bean definition (if any)
 	 * @return the resulting bean definition
 	 */
@@ -1393,7 +1396,8 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Decorate the given bean definition through a namespace handler, if applicable.
-	 * @param ele the current element
+	 *
+	 * @param ele         the current element
 	 * @param originalDef the current bean definition
 	 * @return the decorated bean definition
 	 */
@@ -1403,8 +1407,9 @@ public class BeanDefinitionParserDelegate {
 
 	/**
 	 * Decorate the given bean definition through a namespace handler, if applicable.
-	 * @param ele the current element
-	 * @param originalDef the current bean definition
+	 *
+	 * @param ele          the current element
+	 * @param originalDef  the current bean definition
 	 * @param containingBd the containing bean definition (if any)
 	 * @return the decorated bean definition
 	 */
@@ -1434,8 +1439,9 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Decorate the given bean definition through a namespace handler,
 	 * if applicable.
-	 * @param node the current child node
-	 * @param originalDef the current bean definition
+	 *
+	 * @param node         the current child node
+	 * @param originalDef  the current bean definition
 	 * @param containingBd the containing bean definition (if any)
 	 * @return the decorated bean definition
 	 */
@@ -1451,11 +1457,9 @@ public class BeanDefinitionParserDelegate {
 				if (decorated != null) {
 					return decorated;
 				}
-			}
-			else if (namespaceUri.startsWith("http://www.springframework.org/schema/")) {
+			} else if (namespaceUri.startsWith("http://www.springframework.org/schema/")) {
 				error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", node);
-			}
-			else {
+			} else {
 				// A custom namespace, not to be handled by Spring - maybe "xml:...".
 				if (logger.isDebugEnabled()) {
 					logger.debug("No Spring NamespaceHandler found for XML schema namespace [" + namespaceUri + "]");
@@ -1482,12 +1486,12 @@ public class BeanDefinitionParserDelegate {
 		return new BeanDefinitionHolder(innerDefinition, id);
 	}
 
-
 	/**
 	 * Get the namespace URI for the supplied node.
 	 * <p>The default implementation uses {@link Node#getNamespaceURI}.
 	 * Subclasses may override the default implementation to provide a
 	 * different namespace identification mechanism.
+	 *
 	 * @param node the node
 	 */
 	@Nullable
@@ -1500,6 +1504,7 @@ public class BeanDefinitionParserDelegate {
 	 * <p>The default implementation calls {@link Node#getLocalName}.
 	 * Subclasses may override the default implementation to provide a
 	 * different mechanism for getting the local name.
+	 *
 	 * @param node the {@code Node}
 	 */
 	public String getLocalName(Node node) {
@@ -1512,7 +1517,8 @@ public class BeanDefinitionParserDelegate {
 	 * {@link Node#getNodeName()} and {@link Node#getLocalName()}.
 	 * <p>Subclasses may override the default implementation to provide a different
 	 * mechanism for comparing node names.
-	 * @param node the node to compare
+	 *
+	 * @param node        the node to compare
 	 * @param desiredName the name to check for
 	 */
 	public boolean nodeNameEquals(Node node, String desiredName) {

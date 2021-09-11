@@ -34,12 +34,14 @@ import org.springframework.lang.Nullable;
  * readers that want to follow standard naming conventions.
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see org.springframework.core.io.Resource
+ * @since 1.1
  */
 public interface BeanDefinitionReader {
 
 	/**
+	 * 返回用于注册bean定义的bean工厂
+	 * <p>
 	 * Return the bean factory to register the bean definitions with.
 	 * <p>The factory is exposed through the BeanDefinitionRegistry interface,
 	 * encapsulating the methods that are relevant for bean definition handling.
@@ -47,6 +49,8 @@ public interface BeanDefinitionReader {
 	BeanDefinitionRegistry getRegistry();
 
 	/**
+	 * 资源加载器，主要应用于根据给定的资源文件地址返回对应的Resource
+	 * <p>
 	 * Return the resource loader to use for resource locations.
 	 * Can be checked for the <b>ResourcePatternResolver</b> interface and cast
 	 * accordingly, for loading multiple resources for a given resource pattern.
@@ -60,6 +64,7 @@ public interface BeanDefinitionReader {
 	 * <p>There is also a {@code loadBeanDefinitions(String)} method available,
 	 * for loading bean definitions from a resource location (or location pattern).
 	 * This is a convenience to avoid explicit ResourceLoader handling.
+	 *
 	 * @see #loadBeanDefinitions(String)
 	 * @see org.springframework.core.io.support.ResourcePatternResolver
 	 */
@@ -67,6 +72,8 @@ public interface BeanDefinitionReader {
 	ResourceLoader getResourceLoader();
 
 	/**
+	 * 返回类加载器
+	 * <p>
 	 * Return the class loader to use for bean classes.
 	 * <p>{@code null} suggests to not load bean classes eagerly
 	 * but rather to just register bean definitions with class names,
@@ -76,14 +83,19 @@ public interface BeanDefinitionReader {
 	ClassLoader getBeanClassLoader();
 
 	/**
+	 * BeanName生成器
+	 * 为没有明确指定Bean名称的Bean生成一个名称
+	 * <p>
 	 * Return the BeanNameGenerator to use for anonymous beans
 	 * (without explicit bean name specified).
 	 */
 	BeanNameGenerator getBeanNameGenerator();
 
-
 	/**
+	 * 从指定的资源加载bean定义，返回找到的bean定义的数量
+	 * <p>
 	 * Load bean definitions from the specified resource.
+	 *
 	 * @param resource the resource descriptor
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
@@ -91,7 +103,10 @@ public interface BeanDefinitionReader {
 	int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException;
 
 	/**
+	 * 从多个指定的资源加载bean定义，返回找到的bean定义的数量
+	 * <p>
 	 * Load bean definitions from the specified resources.
+	 *
 	 * @param resources the resource descriptors
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
@@ -99,11 +114,15 @@ public interface BeanDefinitionReader {
 	int loadBeanDefinitions(Resource... resources) throws BeanDefinitionStoreException;
 
 	/**
+	 * 从指定的资源位置加载bean定义
+	 * 该位置也可以是位置模式，前提是此bean定义读取器的ResourceLoader是ResourcePatternResolver
+	 * <p>
 	 * Load bean definitions from the specified resource location.
 	 * <p>The location can also be a location pattern, provided that the
 	 * ResourceLoader of this bean definition reader is a ResourcePatternResolver.
+	 *
 	 * @param location the resource location, to be loaded with the ResourceLoader
-	 * (or ResourcePatternResolver) of this bean definition reader
+	 *                 (or ResourcePatternResolver) of this bean definition reader
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
 	 * @see #getResourceLoader()
@@ -113,9 +132,12 @@ public interface BeanDefinitionReader {
 	int loadBeanDefinitions(String location) throws BeanDefinitionStoreException;
 
 	/**
+	 * 从多个指定的资源位置加载bean定义
+	 * <p>
 	 * Load bean definitions from the specified resource locations.
+	 *
 	 * @param locations the resource locations, to be loaded with the ResourceLoader
-	 * (or ResourcePatternResolver) of this bean definition reader
+	 *                  (or ResourcePatternResolver) of this bean definition reader
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
 	 */

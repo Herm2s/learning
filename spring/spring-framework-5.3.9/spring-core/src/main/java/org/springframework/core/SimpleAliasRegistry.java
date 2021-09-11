@@ -42,31 +42,41 @@ import org.springframework.util.StringValueResolver;
  */
 public class SimpleAliasRegistry implements AliasRegistry {
 
-	/** Logger available to subclasses. */
+	/**
+	 * Logger available to subclasses.
+	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Map from alias to canonical name. */
+	/**
+	 * Map from alias to canonical name.
+	 */
 	private final Map<String, String> aliasMap = new ConcurrentHashMap<>(16);
-
 
 	@Override
 	public void registerAlias(String name, String alias) {
 		Assert.hasText(name, "'name' must not be empty");
 		Assert.hasText(alias, "'alias' must not be empty");
 		synchronized (this.aliasMap) {
+			// 别名与beanName相同
 			if (alias.equals(name)) {
+				// 将该别名从Map中移除
 				this.aliasMap.remove(alias);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Alias definition '" + alias + "' ignored since it points to same name");
 				}
 			}
+			// 别名与beanName不同
 			else {
+				// 根据传入的别名获取beanName
 				String registeredName = this.aliasMap.get(alias);
 				if (registeredName != null) {
+					// 已经注册的名称与当前需要注册的beanName相等
 					if (registeredName.equals(name)) {
 						// An existing alias - no need to re-register
+						// 已存在的别名不需要重新注册
 						return;
 					}
+					// 如果 alias 不允许被覆盖则抛出异常，默认是true，允许被覆盖
 					if (!allowAliasOverriding()) {
 						throw new IllegalStateException("Cannot define alias '" + alias + "' for name '" +
 								name + "': It is already registered for name '" + registeredName + "'.");
@@ -76,7 +86,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 								registeredName + "' with new target name '" + name + "'");
 					}
 				}
+				// 检查给定的名称（user2）是否指向给定的别名（user）作为别名（user2）
+      			/*
+      			   2、<alias name="user" alias="user2"></alias>
+      			   1、<alias name="user2" alias="user"></alias>
+                */
 				checkForAliasCircle(name, alias);
+				// 缓存别名
 				this.aliasMap.put(alias, name);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Alias definition '" + alias + "' registered for name '" + name + "'");
@@ -95,7 +111,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 
 	/**
 	 * Determine whether the given name has the given alias registered.
-	 * @param name the name to check
+	 *
+	 * @param name  the name to check
 	 * @param alias the alias to look for
 	 * @since 4.2.1
 	 */
@@ -131,7 +148,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 
 	/**
 	 * Transitively retrieve all aliases for the given name.
-	 * @param name the target name to find aliases for
+	 *
+	 * @param name   the target name to find aliases for
 	 * @param result the resulting aliases list
 	 */
 	private void retrieveAliases(String name, List<String> result) {
@@ -148,6 +166,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	 * registry, applying the given {@link StringValueResolver} to them.
 	 * <p>The value resolver may for example resolve placeholders
 	 * in target bean names and even in alias names.
+	 *
 	 * @param valueResolver the StringValueResolver to apply
 	 */
 	public void resolveAliases(StringValueResolver valueResolver) {
@@ -159,8 +178,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 				String resolvedName = valueResolver.resolveStringValue(registeredName);
 				if (resolvedAlias == null || resolvedName == null || resolvedAlias.equals(resolvedName)) {
 					this.aliasMap.remove(alias);
-				}
-				else if (!resolvedAlias.equals(alias)) {
+				} else if (!resolvedAlias.equals(alias)) {
 					String existingName = this.aliasMap.get(resolvedAlias);
 					if (existingName != null) {
 						if (existingName.equals(resolvedName)) {
@@ -170,14 +188,13 @@ public class SimpleAliasRegistry implements AliasRegistry {
 						}
 						throw new IllegalStateException(
 								"Cannot register resolved alias '" + resolvedAlias + "' (original: '" + alias +
-								"') for name '" + resolvedName + "': It is already registered for name '" +
-								registeredName + "'.");
+										"') for name '" + resolvedName + "': It is already registered for name '" +
+										registeredName + "'.");
 					}
 					checkForAliasCircle(resolvedName, resolvedAlias);
 					this.aliasMap.remove(alias);
 					this.aliasMap.put(resolvedAlias, resolvedName);
-				}
-				else if (!registeredName.equals(resolvedName)) {
+				} else if (!registeredName.equals(resolvedName)) {
 					this.aliasMap.put(alias, resolvedName);
 				}
 			});
@@ -188,7 +205,8 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	 * Check whether the given name points back to the given alias as an alias
 	 * in the other direction already, catching a circular reference upfront
 	 * and throwing a corresponding IllegalStateException.
-	 * @param name the candidate name
+	 *
+	 * @param name  the candidate name
 	 * @param alias the candidate alias
 	 * @see #registerAlias
 	 * @see #hasAlias
@@ -203,6 +221,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 
 	/**
 	 * Determine the raw name, resolving aliases to canonical names.
+	 *
 	 * @param name the user-specified name
 	 * @return the transformed name
 	 */
