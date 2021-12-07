@@ -19,17 +19,25 @@ public class SemaphoreDemo {
         Semaphore semaphore = new Semaphore(3);
         for (int i = 0; i < 6; i++) {
             new Thread(() -> {
+                // 防止多释放问题
+                boolean acquire = false;
                 try {
                     // 抢车位
-                    semaphore.acquire();
-                    System.out.println(Thread.currentThread().getName() + " 抢到了车位");
-                    TimeUnit.SECONDS.sleep(new Random().nextInt(5));
-                    System.out.println(Thread.currentThread().getName() + " -------离开了了车位");
-                } catch (InterruptedException e) {
+                    acquire =  semaphore.tryAcquire(10L, TimeUnit.SECONDS);
+                    if (acquire) {
+                        System.out.println(Thread.currentThread().getName() + " 抢到了车位");
+                        TimeUnit.SECONDS.sleep(new Random().nextInt(5));
+                        System.out.println(Thread.currentThread().getName() + " -------离开了了车位");
+                    }
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
-                } finally {
+                }
+                finally {
                     // 释放车位
-                    semaphore.release();
+                    if (acquire) {
+                        semaphore.release();
+                    }
                 }
             }, String.valueOf(i)).start();
         }
