@@ -3,7 +3,6 @@ package com.hermes.cas;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicStampedReference;
-import java.util.concurrent.atomic.LongAdder;
 
 /**
  * 原子引用ABA问题
