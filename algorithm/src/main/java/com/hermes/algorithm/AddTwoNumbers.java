@@ -1,4 +1,4 @@
-package main.java.com.hermes.algorithm;
+package com.hermes.algorithm;
 
 /**
  * 两数相加
