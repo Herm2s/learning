@@ -1,7 +1,6 @@
-package com.hermes;
+package com.hermes.retry;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -20,7 +19,7 @@ import java.util.List;
  * @created 2022/7/29 23:41
  */
 @Slf4j
-public class PushConsumer {
+public class RetryConsumer {
 
     public static void main(String[] args) throws MQClientException {
         // 定义一个拉取模式消费者
