@@ -1,4 +1,4 @@
-package threads;
+package com.hermes.algorithm.threads;
 
 /**
  * 题号1114

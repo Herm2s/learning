@@ -1,4 +1,4 @@
-package threads;
+package com.hermes.algorithm.threads;
 
 import java.util.function.IntConsumer;
 

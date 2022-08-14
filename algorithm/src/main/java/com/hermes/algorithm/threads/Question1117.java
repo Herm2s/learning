@@ -1,4 +1,4 @@
-package threads;
+package com.hermes.algorithm.threads;
 
 /**
  * leetcode题号1117
