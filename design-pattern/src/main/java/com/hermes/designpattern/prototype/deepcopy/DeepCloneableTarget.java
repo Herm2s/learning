@@ -3,6 +3,7 @@ package com.hermes.designpattern.prototype.deepcopy;
 import java.io.Serializable;
 
 /**
+ * 链表
  * @author liu.zongbin
  * @since 2022/8/14 21:46
  */
