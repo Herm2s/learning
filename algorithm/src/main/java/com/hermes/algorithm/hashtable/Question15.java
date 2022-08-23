@@ -17,7 +17,7 @@ public class Question15 {
         List<List<Integer>> result = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] > 0) {
-                continue;
+                break;
             }
             // 去重a
             if (i > 0 && nums[i] == nums[i - 1]) {
