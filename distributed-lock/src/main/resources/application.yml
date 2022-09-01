@@ -9,4 +9,3 @@ spring:
     password: 12345678
   redis:
     url: redis://localhost:6379
-    username: redis
