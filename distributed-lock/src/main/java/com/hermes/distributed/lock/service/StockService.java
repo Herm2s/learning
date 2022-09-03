@@ -7,10 +7,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,8 +32,9 @@ public class StockService {
     private ReentrantLock reentrantLock = new ReentrantLock();
 
     public void deduct() {
+        String uuid = UUID.randomUUID().toString();
         // 循环重试加锁
-        while (!this.redisTemplate.opsForValue().setIfAbsent("lock", "111")) {
+        while (!this.redisTemplate.opsForValue().setIfAbsent("lock", uuid, 3, TimeUnit.SECONDS)) {
             try {
                 TimeUnit.MILLISECONDS.sleep(50);
                 this.deduct();
@@ -50,8 +54,14 @@ public class StockService {
                 }
             }
         } finally {
+            String script = "if redis.call('get', KEYS[1]) == ARGV[1] " +
+                    "then " +
+                    "   return redis.call('del', KEYS[1]) " +
+                    "else " +
+                    "    return 0 " +
+                    "end";
             // 解锁
-            this.redisTemplate.delete("lock");
+            this.redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Collections.singletonList("lock"), uuid);
         }
     }
 
@@ -84,7 +94,7 @@ public class StockService {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            deduct();
+                            deduct4();
                         }
                         return exec;
                     }
