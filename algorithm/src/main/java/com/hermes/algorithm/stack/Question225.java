@@ -1,7 +1,6 @@
 package com.hermes.algorithm.stack;
 
 import java.util.ArrayDeque;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
