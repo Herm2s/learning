@@ -1,4 +1,4 @@
-package com.hermes.heima_juc;
+package com.hermes.heima_juc.jmm;
 
 import lombok.extern.slf4j.Slf4j;
 
