@@ -3,14 +3,19 @@ package com.hermes.distributed.lock.service;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.hermes.distributed.lock.mapper.StockMapper;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -28,9 +33,31 @@ public class StockService {
 
     private ReentrantLock reentrantLock = new ReentrantLock();
 
+    private final RedissonClient redissonClient;
+
     public void deduct() {
+        RLock lock = redissonClient.getLock("lock");
+        try {
+            lock.lock();
+            String stock = redisTemplate.opsForValue().get("stock");
+            if (stock != null && stock.length() != 0) {
+                int st = Integer.parseInt(stock);
+                if (st > 0) {
+                    redisTemplate.opsForValue().set("stock", String.valueOf(--st));
+                }
+            }
+            TimeUnit.SECONDS.sleep(1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void deduct5() {
+        String uuid = UUID.randomUUID().toString();
         // 循环重试加锁
-        while (!this.redisTemplate.opsForValue().setIfAbsent("lock", "111")) {
+        while (!this.redisTemplate.opsForValue().setIfAbsent("lock", uuid, 3, TimeUnit.SECONDS)) {
             try {
                 TimeUnit.MILLISECONDS.sleep(50);
                 this.deduct();
@@ -50,8 +77,14 @@ public class StockService {
                 }
             }
         } finally {
+            String script = "if redis.call('get', KEYS[1]) == ARGV[1] " +
+                    "then " +
+                    "   return redis.call('del', KEYS[1]) " +
+                    "else " +
+                    "    return 0 " +
+                    "end";
             // 解锁
-            this.redisTemplate.delete("lock");
+            this.redisTemplate.execute(new DefaultRedisScript<>(script, Boolean.class), Collections.singletonList("lock"), uuid);
         }
     }
 
@@ -84,7 +117,7 @@ public class StockService {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            deduct();
+                            deduct4();
                         }
                         return exec;
                     }
