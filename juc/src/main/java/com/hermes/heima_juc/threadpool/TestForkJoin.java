@@ -13,7 +13,49 @@ public class TestForkJoin {
 
     public static void main(String[] args) {
         ForkJoinPool pool = new ForkJoinPool();
-        System.out.println("计算结果：" + pool.invoke(new AddTask1(5)));
+        System.out.println("计算结果：" + pool.invoke(new AddTask2(1, 10)));
+    }
+}
+
+@Slf4j(topic = "AddTask2")
+class AddTask2 extends RecursiveTask<Integer> {
+
+    int begin;
+
+    int end;
+
+    public AddTask2(int begin, int end) {
+        this.begin = begin;
+        this.end = end;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + begin + "," + end + '}';
+    }
+
+    @Override
+    protected Integer compute() {
+        if (begin == end) {
+            log.debug("join() {}", begin);
+            return begin;
+        }
+
+        if (end - begin == 1) {
+            log.debug("join() {} + {} = {}", begin, end, end + begin);
+            return end + begin;
+        }
+
+        // 1 5
+        int mid = (end + begin) / 2; // 3
+        AddTask2 t1 = new AddTask2(begin, mid); // 1,3
+        t1.fork();
+        AddTask2 t2 = new AddTask2(mid + 1, end); // 4,5
+        t2.fork();
+        log.debug("fork() {} + {} = ?", t1, t2);
+        int result = t1.join() + t2.join();
+        log.debug("join() {} + {} = {}", t1, t2, result);
+        return result;
     }
 }
 
