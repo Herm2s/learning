@@ -2,22 +2,35 @@ package com.hermes.algorithm.binarytree;
 
 /**
  * @author liu.zongbin
- * @since 2022/9/8 21:10
+ * @since 2022/9/9 12:46
  */
-public class Question104 {
+public class Question110 {
 
-    public int maxDepth(TreeNode root) {
-        return getHeight(root);
+    public boolean isBalanced(TreeNode root) {
+        return getHeight(root) >= 0;
     }
 
-
-    int getHeight(TreeNode node) {
+    public int getHeight(TreeNode node) {
         if (node == null) {
             return 0;
         }
         int leftHeight = getHeight(node.left);
+        // 左子树不是平衡二叉树
+        if (leftHeight == -1) {
+            return -1;
+        }
         int rightHeight = getHeight(node.right);
-        return 1 + Math.max(leftHeight, rightHeight);
+        // 右子树不是平衡二叉树
+        if (rightHeight == -1) {
+            return -1;
+        }
+        int result;
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            result = -1;
+        } else {
+            result = Math.max(leftHeight, rightHeight) + 1;
+        }
+        return result;
     }
 
     public static void main(String[] args) {
@@ -43,5 +56,3 @@ public class Question104 {
         }
     }
 }
-
-
