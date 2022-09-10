@@ -11,7 +11,6 @@ import java.util.List;
  */
 public class Question257 {
 
-
     public List<String> binaryTreePaths(TreeNode root) {
         List<String> result = new ArrayList<>();
         traversal(result, new LinkedList<>(), root);
