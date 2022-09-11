@@ -10,7 +10,6 @@ import java.util.concurrent.Semaphore;
  */
 @Slf4j(topic = "TestSemaphore")
 public class TestSemaphore {
-
     public static void main(String[] args) {
         // 1. 创建 semaphore 对象
         Semaphore semaphore = new Semaphore(3);
