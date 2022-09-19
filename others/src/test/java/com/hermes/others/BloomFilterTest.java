@@ -15,12 +15,12 @@ import java.util.concurrent.TimeUnit;
  * @created 2022/7/31 17:57
  */
 
-public class BloomFilterTest {
+class BloomFilterTest {
 
     ThreadPoolExecutor executor = new ThreadPoolExecutor(100, 500, 30L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(500));
 
     @Test
-    public void test() throws InterruptedException {
+    void test() throws InterruptedException {
         BloomFilter<String> filter = BloomFilter.create(new Funnel<String>() {
 
             @Override
