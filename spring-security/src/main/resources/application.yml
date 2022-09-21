@@ -6,3 +6,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/test
     username: root
     password: 12345678
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    protocol: smtp
+    username: USERNAME@gmail.com
+    password: password
+
+support:
+  email: USERNAME@gmail.com

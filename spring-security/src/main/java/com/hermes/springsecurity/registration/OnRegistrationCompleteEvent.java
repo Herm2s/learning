@@ -11,7 +11,6 @@ import java.util.Locale;
  * @since 2022/9/20
  */
 @Getter
-@SuppressWarnings("serial")
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
     private final String appUrl;

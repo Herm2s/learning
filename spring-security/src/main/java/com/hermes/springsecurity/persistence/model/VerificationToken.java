@@ -4,13 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -42,7 +36,7 @@ public class VerificationToken {
         super();
 
         this.token = token;
-        this.expiryDate = calculateExpiryDate();
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
     public VerificationToken(final String token, final User user) {
@@ -50,14 +44,19 @@ public class VerificationToken {
 
         this.token = token;
         this.user = user;
-        this.expiryDate = calculateExpiryDate();
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    private Date calculateExpiryDate() {
+    private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.MINUTE, VerificationToken.EXPIRATION);
+        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return new Date(cal.getTime().getTime());
+    }
+
+    public void updateToken(final String token) {
+        this.token = token;
+        this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
     @Override
