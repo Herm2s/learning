@@ -5,6 +5,8 @@ import com.hermes.springsecurity.persistence.model.VerificationToken;
 import com.hermes.springsecurity.web.dto.UserDto;
 import com.hermes.springsecurity.web.error.UserAlreadyExistException;
 
+import java.util.Optional;
+
 /**
  * @author liu.zongbin
  * @since 2022/9/20
@@ -22,4 +24,14 @@ public interface IUserService {
     VerificationToken getVerificationToken(String token);
 
     VerificationToken generateNewVerificationToken(String existingToken);
+
+    User findUserByEmail(String userEmail);
+
+    void createPasswordResetTokenForUser(User user, String token);
+
+    Optional<User> getUserByPasswordResetToken(String token);
+
+    void changeUserPassword(User user, String newPassword);
+
+    boolean checkIfValidOldPassword(User user, String oldPassword);
 }
