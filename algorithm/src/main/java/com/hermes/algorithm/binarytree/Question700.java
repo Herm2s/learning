@@ -6,10 +6,6 @@ package com.hermes.algorithm.binarytree;
  */
 public class Question700 {
 
-    public static void main(String[] args) {
-
-    }
-
     /**
      * 递归法
      */
@@ -39,6 +35,10 @@ public class Question700 {
             }
         }
         return root;
+    }
+
+    public static void main(String[] args) {
+
     }
 
     class TreeNode {
