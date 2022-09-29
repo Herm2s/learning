@@ -1,6 +1,8 @@
 package com.hermes.algorithm.hashtable;
 
 /**
+ * 面试题 01.02. 判定是否互为字符重排
+ *
  * @author liu.zongbin
  * @since 2022/9/27
  */
