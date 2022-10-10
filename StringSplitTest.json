@@ -1,0 +1,508 @@
+[
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.apache",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "100"
+    },
+    "primaryMetric": {
+      "score": 1165.2570464616188,
+      "scoreError": 36.12631227897784,
+      "scoreConfidence": [
+        1129.130734182641,
+        1201.3833587405966
+      ],
+      "scorePercentiles": {
+        "0.0": 1152.0448389474934,
+        "50.0": 1165.4609035902388,
+        "90.0": 1174.377968172541,
+        "95.0": 1174.377968172541,
+        "99.0": 1174.377968172541,
+        "99.9": 1174.377968172541,
+        "99.99": 1174.377968172541,
+        "99.999": 1174.377968172541,
+        "99.9999": 1174.377968172541,
+        "100.0": 1174.377968172541
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          1152.0448389474934,
+          1160.6156228318625,
+          1165.4609035902388,
+          1174.377968172541,
+          1173.7858987659583
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.apache",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "1000"
+    },
+    "primaryMetric": {
+      "score": 126.77832626698178,
+      "scoreError": 16.757608904553116,
+      "scoreConfidence": [
+        110.02071736242866,
+        143.5359351715349
+      ],
+      "scorePercentiles": {
+        "0.0": 119.59452706580862,
+        "50.0": 127.46194160182401,
+        "90.0": 131.26347321693615,
+        "95.0": 131.26347321693615,
+        "99.0": 131.26347321693615,
+        "99.9": 131.26347321693615,
+        "99.99": 131.26347321693615,
+        "99.999": 131.26347321693615,
+        "99.9999": 131.26347321693615,
+        "100.0": 131.26347321693615
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          131.26347321693615,
+          119.59452706580862,
+          126.9097661098514,
+          128.66192334048873,
+          127.46194160182401
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.apache",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "10000"
+    },
+    "primaryMetric": {
+      "score": 11.37810605364059,
+      "scoreError": 0.2366689205759275,
+      "scoreConfidence": [
+        11.141437133064661,
+        11.614774974216518
+      ],
+      "scorePercentiles": {
+        "0.0": 11.32632712406729,
+        "50.0": 11.34225513238406,
+        "90.0": 11.460138180514395,
+        "95.0": 11.460138180514395,
+        "99.0": 11.460138180514395,
+        "99.9": 11.460138180514395,
+        "99.99": 11.460138180514395,
+        "99.999": 11.460138180514395,
+        "99.9999": 11.460138180514395,
+        "100.0": 11.460138180514395
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          11.32632712406729,
+          11.334005508696771,
+          11.427804322540434,
+          11.460138180514395,
+          11.34225513238406
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.hutool",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "100"
+    },
+    "primaryMetric": {
+      "score": 654.4625839118028,
+      "scoreError": 40.97747460636739,
+      "scoreConfidence": [
+        613.4851093054353,
+        695.4400585181702
+      ],
+      "scorePercentiles": {
+        "0.0": 636.5081454186578,
+        "50.0": 658.0493919129706,
+        "90.0": 662.1149394785142,
+        "95.0": 662.1149394785142,
+        "99.0": 662.1149394785142,
+        "99.9": 662.1149394785142,
+        "99.99": 662.1149394785142,
+        "99.999": 662.1149394785142,
+        "99.9999": 662.1149394785142,
+        "100.0": 662.1149394785142
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          658.0493919129706,
+          662.1149394785142,
+          662.1010952806663,
+          653.5393474682053,
+          636.5081454186578
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.hutool",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "1000"
+    },
+    "primaryMetric": {
+      "score": 61.272711720460606,
+      "scoreError": 4.574175721574619,
+      "scoreConfidence": [
+        56.69853599888599,
+        65.84688744203523
+      ],
+      "scorePercentiles": {
+        "0.0": 60.02493929914411,
+        "50.0": 60.988308596427714,
+        "90.0": 62.85796787378796,
+        "95.0": 62.85796787378796,
+        "99.0": 62.85796787378796,
+        "99.9": 62.85796787378796,
+        "99.99": 62.85796787378796,
+        "99.999": 62.85796787378796,
+        "99.9999": 62.85796787378796,
+        "100.0": 62.85796787378796
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          60.38241558514876,
+          60.02493929914411,
+          60.988308596427714,
+          62.10992724779449,
+          62.85796787378796
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.hutool",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "10000"
+    },
+    "primaryMetric": {
+      "score": 6.1805653771351645,
+      "scoreError": 0.3370239615017068,
+      "scoreConfidence": [
+        5.8435414156334575,
+        6.5175893386368715
+      ],
+      "scorePercentiles": {
+        "0.0": 6.096035066393737,
+        "50.0": 6.140909152667856,
+        "90.0": 6.289423217975664,
+        "95.0": 6.289423217975664,
+        "99.0": 6.289423217975664,
+        "99.9": 6.289423217975664,
+        "99.99": 6.289423217975664,
+        "99.999": 6.289423217975664,
+        "99.9999": 6.289423217975664,
+        "100.0": 6.289423217975664
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          6.096035066393737,
+          6.258785856471841,
+          6.289423217975664,
+          6.140909152667856,
+          6.117673592166726
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.string",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "100"
+    },
+    "primaryMetric": {
+      "score": 1573.9291677243104,
+      "scoreError": 27.09649790474661,
+      "scoreConfidence": [
+        1546.8326698195638,
+        1601.0256656290571
+      ],
+      "scorePercentiles": {
+        "0.0": 1563.84700631537,
+        "50.0": 1572.8311662367819,
+        "90.0": 1580.6664685026717,
+        "95.0": 1580.6664685026717,
+        "99.0": 1580.6664685026717,
+        "99.9": 1580.6664685026717,
+        "99.99": 1580.6664685026717,
+        "99.999": 1580.6664685026717,
+        "99.9999": 1580.6664685026717,
+        "100.0": 1580.6664685026717
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          1563.84700631537,
+          1571.6810300744592,
+          1580.6664685026717,
+          1572.8311662367819,
+          1580.6201674922704
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.string",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "1000"
+    },
+    "primaryMetric": {
+      "score": 158.33306737150906,
+      "scoreError": 4.235125142457768,
+      "scoreConfidence": [
+        154.09794222905128,
+        162.56819251396684
+      ],
+      "scorePercentiles": {
+        "0.0": 157.12181685351226,
+        "50.0": 157.9722082214739,
+        "90.0": 159.98465782019292,
+        "95.0": 159.98465782019292,
+        "99.0": 159.98465782019292,
+        "99.9": 159.98465782019292,
+        "99.99": 159.98465782019292,
+        "99.999": 159.98465782019292,
+        "99.9999": 159.98465782019292,
+        "100.0": 159.98465782019292
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          157.9722082214739,
+          158.79850545621466,
+          157.78814850615143,
+          157.12181685351226,
+          159.98465782019292
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  },
+  {
+    "jmhVersion": "1.35",
+    "benchmark": "com.hermes.others.jmh.StringSplitTest.string",
+    "mode": "thrpt",
+    "threads": 3,
+    "forks": 1,
+    "jvm": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/bin/java",
+    "jvmArgs": [
+      "-javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=52490:/Applications/IntelliJ IDEA.app/Contents/bin",
+      "-Dfile.encoding=UTF-8"
+    ],
+    "jdkVersion": "17.0.4",
+    "vmName": "OpenJDK 64-Bit Server VM",
+    "vmVersion": "17.0.4+8",
+    "warmupIterations": 3,
+    "warmupTime": "2 s",
+    "warmupBatchSize": 1,
+    "measurementIterations": 5,
+    "measurementTime": "2 s",
+    "measurementBatchSize": 1,
+    "params": {
+      "length": "10000"
+    },
+    "primaryMetric": {
+      "score": 15.709960484830479,
+      "scoreError": 0.6549274212413553,
+      "scoreConfidence": [
+        15.055033063589123,
+        16.364887906071832
+      ],
+      "scorePercentiles": {
+        "0.0": 15.446737070916745,
+        "50.0": 15.724882306007245,
+        "90.0": 15.887931886921173,
+        "95.0": 15.887931886921173,
+        "99.0": 15.887931886921173,
+        "99.9": 15.887931886921173,
+        "99.99": 15.887931886921173,
+        "99.999": 15.887931886921173,
+        "99.9999": 15.887931886921173,
+        "100.0": 15.887931886921173
+      },
+      "scoreUnit": "ops/s",
+      "rawData": [
+        [
+          15.667485029240517,
+          15.446737070916745,
+          15.887931886921173,
+          15.82276613106671,
+          15.724882306007245
+        ]
+      ]
+    },
+    "secondaryMetrics": {
+    }
+  }
+]
+
+
