@@ -6,11 +6,6 @@ package com.hermes.algorithm.hashtable;
  */
 public class Question1790 {
 
-    public static void main(String[] args) {
-        Question1790 question1790 = new Question1790();
-        System.out.println(question1790.areAlmostEqual("c", "q"));
-    }
-
     /**
      * 如果两个字符串相等，则不需要进行交换即可满足相等；
      * 如果两个字符串不相等，字符串一定存在两个位置i, j处的字符不相等，且满足s1[i] = s2[j], s1[j] = s2[i]
@@ -32,5 +27,10 @@ public class Question1790 {
         return index == 2
                 && s1.charAt(indexes[0]) == s2.charAt(indexes[1])
                 && s1.charAt(indexes[1]) == s2.charAt(indexes[0]);
+    }
+
+    public static void main(String[] args) {
+        Question1790 question1790 = new Question1790();
+        System.out.println(question1790.areAlmostEqual("c", "q"));
     }
 }
