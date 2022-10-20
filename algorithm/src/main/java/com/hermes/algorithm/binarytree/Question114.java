@@ -9,23 +9,6 @@ import java.util.List;
  */
 public class Question114 {
 
-    public static void main(String[] args) {
-        TreeNode a = new TreeNode(1);
-        TreeNode b = new TreeNode(2);
-        TreeNode c = new TreeNode(3);
-        TreeNode d = new TreeNode(4);
-        TreeNode e = new TreeNode(5);
-        TreeNode f = new TreeNode(6);
-        a.left = b;
-        a.right = e;
-        b.left = c;
-        b.right = d;
-        e.right = f;
-
-        Question114 question114 = new Question114();
-        question114.flatten1(a);
-    }
-
     public void flatten(TreeNode root) {
         TreeNode cur = root;
         while (cur != null) {
@@ -61,5 +44,22 @@ public class Question114 {
             flattenToList1(root.left, list);
             flattenToList1(root.right, list);
         }
+    }
+
+    public static void main(String[] args) {
+        TreeNode a = new TreeNode(1);
+        TreeNode b = new TreeNode(2);
+        TreeNode c = new TreeNode(3);
+        TreeNode d = new TreeNode(4);
+        TreeNode e = new TreeNode(5);
+        TreeNode f = new TreeNode(6);
+        a.left = b;
+        a.right = e;
+        b.left = c;
+        b.right = d;
+        e.right = f;
+
+        Question114 question114 = new Question114();
+        question114.flatten1(a);
     }
 }

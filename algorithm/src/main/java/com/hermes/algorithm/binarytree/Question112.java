@@ -1,11 +1,12 @@
 package com.hermes.algorithm.binarytree;
 
 /**
+ * 路径总和
+ *
  * @author liu.zongbin
  * @since 2022/9/15 20:10
  */
 public class Question112 {
-
 
     public boolean hasPathSum(TreeNode root, int targetSum) {
         return traversal(root, targetSum);
