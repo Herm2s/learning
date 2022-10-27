@@ -26,6 +26,7 @@ public class Question206 {
     }
 
     public static void main(String[] args) {
+        // 1 -> 2 -> 3-> 4 -> 5
         ListNode node1 = new ListNode(1);
         ListNode node2 = new ListNode(2);
         ListNode node3 = new ListNode(3);

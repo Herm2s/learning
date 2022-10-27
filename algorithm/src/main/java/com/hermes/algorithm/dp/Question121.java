@@ -18,7 +18,7 @@ public class Question121 {
         for (int price : prices) {
             // 找到一个最小的购入点
             low = Math.min(price, low);
-            result = Math.max(price, result - low);
+            result = Math.max(result, price - low);
             System.out.println();
         }
         return result;
