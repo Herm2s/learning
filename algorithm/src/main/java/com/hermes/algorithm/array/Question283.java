@@ -24,7 +24,7 @@ public class Question283 {
 
     public static void main(String[] args) {
         Question283 question1822 = new Question283();
-        int[] nums = {2, 1, 0, 3, 12};
+        int[] nums = {1, 2, 0, 0, 12};
         question1822.moveZeroes(nums);
         System.out.println(Arrays.toString(nums));
     }
