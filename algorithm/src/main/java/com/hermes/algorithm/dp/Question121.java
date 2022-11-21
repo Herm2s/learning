@@ -28,11 +28,25 @@ public class Question121 {
      * 动态规划
      */
     public int maxProfit1(int[] prices) {
-        return 0;
+        int n = prices.length;
+        int[] dp = new int[2];
+        // 0表示未持有股票
+        // 1表示持有股票
+        dp[0] = 0;
+        dp[1] = -prices[0];
+        for (int i = 1; i < n; i++) {
+            // 昨天不持有股票，保持现状：dp[0]
+            // 昨天持有股票，今天卖出：dp[1] + prices[i]
+            dp[0] = Math.max(dp[0], dp[1] + prices[i]);
+            // 昨天不持有股票，今天买入：- prices[i]
+            // 昨天持有股票，保持现状：dp[1]
+            dp[1] = Math.max(-prices[i], dp[1]);
+        }
+        return dp[0];
     }
 
     public static void main(String[] args) {
         Question121 question121 = new Question121();
-        System.out.println(question121.maxProfit(new int[]{7, 1, 5, 3, 6, 4}));
+        System.out.println(question121.maxProfit1(new int[]{7, 1, 5, 3, 6, 4}));
     }
 }
