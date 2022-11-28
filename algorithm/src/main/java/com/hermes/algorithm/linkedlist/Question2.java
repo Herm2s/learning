@@ -1,33 +1,12 @@
-package com.hermes.algorithm;
+package com.hermes.algorithm.linkedlist;
 
 /**
  * 两数相加
- * https://leetcode-cn.com/problems/add-two-numbers/
  *
- * @author liuzongbin
- * @version 1.0
- * @date 2021/11/12
+ * @author liu.zongbin
+ * @since 2022/11/28
  */
-class ListNode {
-
-    int val;
-
-    ListNode next;
-
-    ListNode() {
-    }
-
-    ListNode(int val) {
-        this.val = val;
-    }
-
-    ListNode(int val, ListNode next) {
-        this.val = val;
-        this.next = next;
-    }
-}
-
-public class AddTwoNumbers {
+public class Question2 {
 
     /**
      * 整体思路：
@@ -36,10 +15,8 @@ public class AddTwoNumbers {
      * 1. 获取两个链表所对应的长度
      * 2. 在较短的链表末尾补零
      * 3. 对齐相加考虑进位
-     * 小技巧：对于链表问题，返回结果为头结点时，通常需要先初始化一个预先指针pre，该指针的下一个节点指向真正的头结点head。
-     * 使用预先指针的目的在于链表初始化时无可用节点值，而且链表构造过程需要指针移动，进而会导致头指针丢失，无法返回结果。
      */
-    public ListNode addTowNumbers(ListNode l1, ListNode l2) {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         // res存放结果，cur为链表的尾指针
         ListNode res = new ListNode(0);
         ListNode cur = res;
@@ -72,9 +49,5 @@ public class AddTwoNumbers {
             cur.next = new ListNode(1);
         }
         return res.next;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(Integer.parseInt(" 21321 "));
     }
 }
