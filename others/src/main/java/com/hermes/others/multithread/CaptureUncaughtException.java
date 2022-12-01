@@ -18,7 +18,8 @@ class ExceptionThread2 implements Runnable {
         throw new RuntimeException();
     }
 }
-class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler{
+
+class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
@@ -26,7 +27,7 @@ class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler{
     }
 }
 
-class HandlerThreadFactory implements ThreadFactory{
+class HandlerThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(Runnable r) {
@@ -39,7 +40,7 @@ class HandlerThreadFactory implements ThreadFactory{
     }
 }
 
-public class CaptureUncaughtException{
+public class CaptureUncaughtException {
     public static void main(String[] args) {
         ExecutorService exec = Executors.newCachedThreadPool(new HandlerThreadFactory());
         exec.execute(new ExceptionThread2());
