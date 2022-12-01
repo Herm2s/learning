@@ -1,4 +1,4 @@
-package com.hermes.algorithm.matrix;
+package com.hermes.algorithm.array;
 
 import java.util.Arrays;
 
