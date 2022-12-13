@@ -29,7 +29,7 @@ import java.util.List;
 public class MessageCodec extends ByteToMessageCodec<Message> {
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
+    public void encode(ChannelHandlerContext ctx, Message msg, ByteBuf out) throws Exception {
         // 1. 4个字节的魔数
         out.writeBytes("HERM".getBytes());
         // 2. 1个字节的版本号

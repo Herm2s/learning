@@ -1,6 +1,5 @@
 package com.hermes.jdk;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
 
 /**
  * @author liuzongbin
