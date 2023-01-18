@@ -20,15 +20,23 @@ FilterChainProxy -> 根据请求决定一个SecurityFilterChain -> 执行Securit
 - SecurityConfigurer
 - AbstractConfiguredSecurityBuilder
 
-AbstractConfiguredSecurityBuilder会调用SecurityConfigurer的init()和configure()方法，完成SecurityBuilder对象的配置， 
+AbstractConfiguredSecurityBuilder会调用SecurityConfigurer的init()和configure()方法，完成SecurityBuilder对象的配置，
 而HttpSecurity和WebSecurity对象都实现了SecurityBuilder，因此就完成了这两个对象的build。
 
 ## 三、第三节内容
 
 主要讲解下面五个类：
 
-- Authentication：代表这一个请求的Token信息
-- AuthenticationManager：鉴权管理器
+- Authentication：代表着一个请求的Token信息
+- AuthenticationManager：用于验证Token的管理器
 - AuthenticationManagerBuilder：用于构建AuthenticationManager
-- ProviderManager
-- AuthenticationProvider
+- ProviderManager：AuthenticationManager最重要的实现类，持有一个AuthenticationProvider的List
+- AuthenticationProvider：真正干活的类，用来验证Token
+
+## 四、第四节内容
+
+- UserDetailsService
+- DaoAuthenticationProvider
+- AbstractUserDetailsAuthenticationProvider
+- UsernamePasswordAuthenticationFilter
+- FormLoginConfigurer
