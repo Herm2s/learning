@@ -40,3 +40,11 @@ AbstractConfiguredSecurityBuilder会调用SecurityConfigurer的init()和configur
 - AbstractUserDetailsAuthenticationProvider
 - UsernamePasswordAuthenticationFilter
 - FormLoginConfigurer
+
+## 五、第五节内容
+- SecurityContext
+- SecurityContextHolder
+- SecurityContextPersistenceFilter
+- SecurityContextHolderFilter
+- SecurityContextRepository
+- SecurityContextConfigurer
