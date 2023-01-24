@@ -48,3 +48,41 @@ AbstractConfiguredSecurityBuilder会调用SecurityConfigurer的init()和configur
 - SecurityContextHolderFilter
 - SecurityContextRepository
 - SecurityContextConfigurer
+
+## 六、第六节内容
+- RememberMeAuthenticationFilter
+- RememberMeAuthenticationProvider 
+- RememberMeAuthenticationToken
+- RememberMeConfigurer
+- RememberMeServices
+- SessionManagementFilter
+- SessionAuthenticationStrategy
+- SessionRegistry
+- SessionInformation
+- SessionInformationExpiredStrategy
+- SessionManagementConfigurer
+- 
+
+## 七、第七节内容
+- AnonymousAuthenticationFilter 
+- ExceptionTranslationFilter 
+- LogoutFilter
+SpringSecurity顶层流程:
+  DelegatingFilterProxy -> FilterChainProxy -> SecurityFilterChain ->具体的Filter
+HttpSecurityConfiguration：配置了基础的 HttpSecurity对象以供我们注入使用
+WebSecurityConfiguration：注入了我们自己的 SecurityFilterChain Bean然后添加到 WebSecurity中
+最终由WebSecurity构建出 FilterChainProxy 来执行SpringSecurity的过滤逻辑
+
+## 八、第八节内容
+实战教学，主要讲解如何利用Spring Security实现我们的安全系统
+并拓展一种登录方式：短信登录
+
+## 九、第九节内容
+- AuthorizationFilter：与其相对应的有 FilterSecurityInterceptor(已过时)
+- AuthorizationManager
+- AuthorizationDecision
+- AuthorizationRequestConfigurer
+- RequestAuthorizationContext
+- AuthorizationManagerRequestMatcherRegistry
+- AbstractRequestMatcherRegistry
+- AuthorizedUrl
