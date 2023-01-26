@@ -1,26 +1,26 @@
 package com.hermes.springsecurity1.config;
 
-import com.hermes.springsecurity1.support.SmsCodeAuthenticationProvider;
-import com.hermes.springsecurity1.support.SmsCodeLoginConfigurer;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 /**
  * @author liu.zongbin
  * @since 2023/1/18
  */
 @Configuration
-@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final SmsCodeAuthenticationProvider smsCodeAuthenticationProvider;
+    @Resource(name = "frameworkJwtSecurityContextRepository")
+    private SecurityContextRepository securityContextRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -46,16 +46,19 @@ public class SecurityConfig {
                 .and()
                 // 配置身份认证入口点，请求需要认证时会跳到入口点
                 .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint);
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .securityContext()
+                .securityContextRepository(securityContextRepository);
 
         // 短信验证码登录配置
-        SmsCodeLoginConfigurer<HttpSecurity> smsCodeLoginConfigurer = new SmsCodeLoginConfigurer<>();
-        smsCodeLoginConfigurer.loginProcessingUrl("/smsCodeLogin")
-                .successHandler(successHandler)
-                .failureHandler(failureHandler);
-        http.apply(smsCodeLoginConfigurer);
-        http.authenticationProvider(smsCodeAuthenticationProvider)
-                .addFilterBefore(smsCodeLoginConfigurer.getAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+//        SmsCodeLoginConfigurer<HttpSecurity> smsCodeLoginConfigurer = new SmsCodeLoginConfigurer<>();
+//        smsCodeLoginConfigurer.loginProcessingUrl("/smsCodeLogin")
+//                .successHandler(successHandler)
+//                .failureHandler(failureHandler);
+//        http.apply(smsCodeLoginConfigurer);
+//        http.authenticationProvider(smsCodeAuthenticationProvider)
+//                .addFilterBefore(smsCodeLoginConfigurer.getAuthFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

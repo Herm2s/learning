@@ -1,5 +1,6 @@
 package com.hermes.springsecurity1.config;
 
+import com.hermes.springsecurity1.constant.SecurityConstant;
 import com.hermes.springsecurity1.util.JsonResult;
 import com.hermes.springsecurity1.util.ResponseUtil;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,6 @@ public class FrameworkAuthenticationSuccessHandler implements AuthenticationSucc
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("{} 登录成功", authentication.getPrincipal());
-        ResponseUtil.responseJson(response, JsonResult.success("登录成功"));
+        ResponseUtil.responseJson(response, JsonResult.success("登录成功", request.getAttribute(SecurityConstant.ACCESS_TOKEN_PARAM)));
     }
 }

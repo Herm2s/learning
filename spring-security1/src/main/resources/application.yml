@@ -3,3 +3,10 @@ server:
     encoding:
       charset: utf-8
       force-response: true
+
+spring:
+  data:
+    redis:
+      client-type: lettuce
+  jackson:
+    constructor-detector: use_properties_based

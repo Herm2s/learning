@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Component;
 
 /**
  * 短信登录认证提供器
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
  * @since 2023/1/23
  */
 @Slf4j
-@Component
+//@Component
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
 
     @Override
