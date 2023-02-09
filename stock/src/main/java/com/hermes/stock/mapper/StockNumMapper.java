@@ -11,7 +11,6 @@ public interface StockNumMapper {
     @Update(value = """
             UPDATE stock_num SET num = num - 1
             WHERE id = #{id} 
-                AND num >= 1
             """)
     int reduce(Long id);
 }
