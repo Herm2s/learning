@@ -2,16 +2,14 @@ package com.hermes.config;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.config.ConfigChangeEvent;
-import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.client.config.listener.impl.AbstractConfigChangeListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Collection;
+import org.springframework.context.event.EventListener;
 
 /**
  * @author liu.zongbin
@@ -21,7 +19,7 @@ import java.util.Collection;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(AppProperties.class)
-public class AppConfig implements InitializingBean {
+public class AppConfig {
 
     private final AppProperties appProperties;
 
@@ -35,13 +33,15 @@ public class AppConfig implements InitializingBean {
         return appClient;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
+    @EventListener(ApplicationReadyEvent.class)
+    public void refresh() throws Exception {
         AbstractConfigChangeListener listener = new AbstractConfigChangeListener() {
             @Override
             public void receiveConfigChange(ConfigChangeEvent event) {
-                Collection<ConfigChangeItem> changeItems = event.getChangeItems();
-                log.info(changeItems.toString());
+//                Collection<ConfigChangeItem> changeItems = event.getChangeItems();
+//                log.info(changeItems.toString());
+                log.info("app Name: {}", appProperties.getAppName());
+
             }
         };
         this.nacosConfigManager

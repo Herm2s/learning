@@ -1,6 +1,7 @@
 package com.hermes.config;
 
 import cn.hutool.core.util.StrUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -24,7 +25,7 @@ public class AppController {
     private String appName;
 
     @GetMapping("/app")
-    public String app() {
+    public String app(HttpServletRequest request) {
         String template = """
                 @Value: {},
                 appProperties: {}
