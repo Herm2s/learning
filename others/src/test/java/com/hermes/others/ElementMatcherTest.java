@@ -14,7 +14,7 @@ class ElementMatcherTest {
     @Test
     void test1() {
         System.out.println(new StringMatcher("va", StringMatcher.Mode.CONTAINS)
-                .matches("value"));
+                .matches("value2"));
     }
 
     public static ElementMatcher.Junction<String> containsA() {
